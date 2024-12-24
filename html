@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Каталог товаров</title>
+  <style>
+    /* Основные стили */
+    body {
+      margin: 0;
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f4f9;
+      color: #333;
+    }
+
+    header {
+      background: linear-gradient(135deg, #4a90e2, #007bff);
+      color: white;
+      padding: 20px 0;
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .top-right-button {
+      position: absolute;
+      right: 20px;
+      top: 20px;
+      background-color: #ff5a5a;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .top-right-button:hover {
+      background-color: #d44f4f;
+    }
+
+    nav {
+      display: flex;
+      justify-content: center;
+      background: white;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 64px;
+      z-index: 999;
+      padding: 10px;
+      gap: 10px;
+      overflow-x: auto;
+    }
+
+    .tab {
+      padding: 10px 20px;
+      margin: 5px;
+      border-radius: 20px;
+      background: #007bff;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.3s, transform 0.3s;
+    }
+
+    .tab:hover {
+      background-color: #0056b3;
+      transform: scale(1.1);
+    }
+
+    .tab.active {
+      background: #ff5a5a;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    main {
+      padding: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+      overflow: hidden;
+    }
+
+    .category {
+      display: none;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    .category.active {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .product {
+      background: white;
+      border-radius: 10px;
+      padding: 15px;
+      text-align: center;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .product:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .product img {
+      max-width: 100%;
+      border-radius: 5px;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+
+    .product h3 {
+      font-size: 18px;
+      margin: 10px 0;
+    }
+
+    .product p {
+      font-size: 14px;
+      color: #555;
+      cursor: pointer;
+    }
+
+    footer {
+      background: #333;
+      color: white;
+      text-align: center;
+      padding: 15px 0;
+      margin-top: 20px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .catalog-container {
+      max-height: 500px;
+      overflow-y: auto;
+      padding: 20px;
+    }
+
+    .file-input {
+      display: none;
+    }
+
+    .editable {
+      cursor: pointer;
+      border-bottom: 1px dotted #007bff;
+    }
+
+    .company-info {
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      margin: 20px 0;
+    }
+
+    .company-info h3 {
+      font-size: 24px;
+      margin-bottom: 15px;
+    }
+
+    .company-info p {
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    .company-info input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    @media (max-width: 768px) {
+      header {
+        font-size: 20px;
+        padding: 15px 0;
+      }
+
+      nav {
+        padding: 5px;
+      }
+
+      .tab {
+        padding: 8px 16px;
+        font-size: 14px;
+      }
+
+      .product h3 {
+        font-size: 16px;
+      }
+
+      .product p {
+        font-size: 12px;
+      }
+
+      .category.active {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      }
+
+      .top-right-button {
+        font-size: 14px;
+        padding: 6px 12px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .product {
+        padding: 10px;
+      }
+
+      .product img {
+        max-width: 90%;
+      }
+
+      .tab {
+        font-size: 12px;
+        padding: 6px 12px;
+      }
+
+      footer {
+        font-size: 12px;
+        padding: 10px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>Каталог товаров</header>
+
+  <button class="top-right-button" onclick="goToCompanyInfo()">Информация о компании</button>
+
+  <div id="company-info" class="company-info hidden">
+    <h3>Информация о компании</h3>
+    <p id="company-description">Наша компания занимается продажей товаров высокого качества. Мы стремимся предложить нашим клиентам лучшие товары по доступным ценам.</p>
+    <input type="text" id="company-description-edit" placeholder="Изменить описание компании" />
+    <button onclick="updateCompanyDescription()">Сохранить</button>
+  </div>
+
+  <div id="login" class="login-form">
+    <h3>Вход</h3>
+    <input type="text" id="username" placeholder="Логин">
+    <input type="password" id="password" placeholder="Пароль">
+    <button onclick="login()">Войти</button>
+  </div>
+
+  <div id="main-content" class="hidden">
+    <nav id="tabs"></nav>
+
+    <main id="catalog">
+      <div class="catalog-container" id="catalog"></div>
+    </main>
+
+    <footer>&copy; 2024 Каталог товаров. Все права защищены.</footer>
+  </div>
+
+  <script>
+    const correctUsername = 'admin';
+    const correctPassword = 'password';
+
+    const categories = Array.from({ length: 20 }, (_, i) => ({
+      name: `Раздел ${i + 1}`,
+      products: Array.from({ length: 5 }, (_, j) => ({
+        name: `Товар ${j + 1}`,
+        image: "https://via.placeholder.com/250x150",
+        price: `${(Math.random() * 1000).toFixed(2)} ₽`,
+        description: `Описание товара ${j + 1} из раздела ${i + 1}.`
+      }))
+    }));
+
+    function renderTabs() {
+      const tabsContainer = document.getElementById("tabs");
+
+      categories.forEach((category, index) => {
+        const tab = document.createElement("div");
+        tab.classList.add("tab");
+        if (index === 0) tab.classList.add("active");
+
+        const tabName = document.createElement("span");
+        tabName.classList.add("editable");
+        tabName.textContent = category.name;
+        tabName.onclick = () => editTabName(index);
+
+        tab.appendChild(tabName);
+        tab.addEventListener("click", () => setActiveTab(index));
+        tabsContainer.appendChild(tab);
+      });
+    }
+
+    function renderCategories() {
+      const catalog = document.getElementById("catalog");
+
+      categories.forEach((category, index) => {
+        const categoryElement = document.createElement("div");
+        categoryElement.classList.add("category");
+        if (index === 0) categoryElement.classList.add("active");
+
+        category.products.forEach((product, productIndex) => {
+          const productElement = document.createElement("div");
+          productElement.classList.add("product");
+
+          productElement.innerHTML = `
+            <img src="${product.image}" alt="${product.name}" onclick="changeImage(${index}, ${productIndex})">
+            <h3>${product.name}</h3>
+            <p onclick="editDescription(${index}, ${productIndex})">${product.description}</p>
+            <p><strong>${product.price}</strong></p>
+            <button onclick="editProduct(${index}, ${productIndex})">Изменить</button>
+            <input type="file" class="file-input" id="file-input-${index}-${productIndex}" onchange="uploadImage(event, ${index}, ${productIndex})">
+          `;
+          categoryElement.appendChild(productElement);
+        });
+
+        catalog.appendChild(categoryElement);
+      });
+    }
+
+    function setActiveTab(index) {
+      const tabs = document.querySelectorAll(".tab");
+      const categories = document.querySelectorAll(".category");
+
+      tabs.forEach((tab, i) => tab.classList.toggle("active", i === index));
+      categories.forEach((category, i) => category.classList.toggle("active", i === index));
+    }
+
+    function login() {
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+
+      if (username === correctUsername && password === correctPassword) {
+        document.getElementById("login").classList.add("hidden");
+        document.getElementById("main-content").classList.remove("hidden");
+        renderTabs();
+        renderCategories();
+      } else {
+        alert("Неверный логин или пароль.");
+      }
+    }
+
+    function editTabName(index) {
+      const newName = prompt("Введите новое название раздела:", categories[index].name);
+
+      if (newName) {
+        categories[index].name = newName;
+        renderTabs(); 
+      }
+    }
+
+    function editProduct(categoryIndex, productIndex) {
+      const product = categories[categoryIndex].products[productIndex];
+      const newImage = prompt("Введите новый URL изображения:", product.image);
+      const newDescription = prompt("Введите новое описание товара:", product.description);
+      const newPrice = prompt("Введите новую цену товара:", product.price);
+
+      if (newImage) product.image = newImage;
+      if (newDescription) product.description = newDescription;
+      if (newPrice) product.price = newPrice;
+
+      renderCategories();  
+    }
+
+    function changeImage(categoryIndex, productIndex) {
+      const inputFile = document.getElementById(`file-input-${categoryIndex}-${productIndex}`);
+      inputFile.click();
+    }
+
+    function uploadImage(event, categoryIndex, productIndex) {
+      const file = event.target.files[0];
+      const reader = new FileReader();
+
+      reader.onload = function (e) {
+        categories[categoryIndex].products[productIndex].image = e.target.result;
+        renderCategories();
+      };
+
+      if (file) {
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function editDescription(categoryIndex, productIndex) {
+      const newDescription = prompt("Введите новое описание товара:", categories[categoryIndex].products[productIndex].description);
+
+      if (newDescription) {
+        categories[categoryIndex].products[productIndex].description = newDescription;
+        renderCategories(); 
+      }
+    }
+
+    function goToCompanyInfo() {
+      document.getElementById("company-info").classList.remove("hidden");
+      document.getElementById("main-content").classList.add("hidden");
+    }
+
+    function updateCompanyDescription() {
+      const newDescription = document.getElementById("company-description-edit").value;
+      if (newDescription) {
+        document.getElementById("company-description").textContent = newDescription;
+        document.getElementById("company-description-edit").value = '';
+      }
+    }
+  </script>
+
+</body>
+</html>
